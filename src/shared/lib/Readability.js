@@ -21,7 +21,7 @@
 
 /**
  * Public constructor.
- * @param {HTMLDocument} doc     The document to parse.
+ * @param {Document} doc     The document to parse.
  * @param {Object}       options The options object.
  */
 function Readability(doc, options) {
@@ -1279,7 +1279,10 @@ Readability.prototype = {
       var textLength = this._getInnerText(articleContent, true).length;
       if (textLength < this._charThreshold) {
         parseSuccessful = false;
-        page.innerHTML = pageCacheHtml;
+        // Safely restore page content using DOMParser to avoid innerHTML security issues
+        const parser = new DOMParser();
+        const tempDoc = parser.parseFromString(pageCacheHtml, 'text/html');
+        page.replaceChildren(...tempDoc.body.childNodes);
 
         if (this._flagIsActive(this.FLAG_STRIP_UNLIKELYS)) {
           this._removeFlag(this.FLAG_STRIP_UNLIKELYS);
@@ -1602,7 +1605,12 @@ Readability.prototype = {
     this._forEachNode(noscripts, function(noscript) {
       // Parse content of noscript and make sure it only contains image
       var tmp = doc.createElement("div");
-      tmp.innerHTML = noscript.innerHTML;
+      // Safely set content by creating text node and parsing
+      tmp.textContent = noscript.textContent;
+      // Then parse as HTML in a safer way
+      var parser = new DOMParser();
+      var tempDoc = parser.parseFromString(noscript.innerHTML, 'text/html');
+      tmp.replaceChildren(...tempDoc.body.childNodes);
       if (!this._isSingleImage(tmp)) {
         return;
       }

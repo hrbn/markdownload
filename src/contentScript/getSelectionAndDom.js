@@ -41,7 +41,14 @@ function getHTMLOfDocument() {
 
   // if the base element doesn't have a href, use the current location
   if (!baseEl.getAttribute('href')) {
-      baseEl.setAttribute('href', window.location.href);
+      try {
+          baseEl.setAttribute('href', window.location.href);
+      } catch (error) {
+          // Handle CSP violation when setting base URI is blocked
+          // This can happen when the page has a 'base-uri none' CSP directive
+          console.warn('Cannot set base URI due to Content Security Policy:', error.message);
+          // Continue without setting the base URI - relative URLs will be handled during processing
+      }
   }
   
   // remove the hidden content from the page

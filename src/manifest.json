@@ -18,33 +18,13 @@
     "storage",
     "contextMenus",
     "clipboardWrite",
-    "scripting",
-    "sidePanel"
+    "scripting"
   ],
   "host_permissions": [
     "<all_urls>"
   ],
-  "background": {
-    "scripts": [
-      "/shared/lib/browser-polyfill.js",
-      "/shared/options.js",
-      "/shared/context-menus.js",
-      "/background/bg-setup.js"
-    ],
-    "service_worker": "/background/bg-setup.js"
-  },
   "side_panel": {
     "default_path": "popup/popup.html"
-  },
-  "sidebar_action": {
-    "default_title": "MarkDownload",
-    "default_panel": "popup/popup.html",
-    "default_icon": {
-      "16": "icons/favicon-16x16.png",
-      "32": "icons/favicon-32x32.png",
-      "48": "icons/favicon-48x48.png",
-      "128": "icons/appicon-128x128.png"
-    }
   },
   "action": {
     "default_title": "MarkDownload",
@@ -61,7 +41,7 @@
     "open_in_tab": false
   },
   "commands": {
-    "_execute_browser_action": {
+    "_execute_action": {
       "suggested_key": {
         "default": "Alt+Shift+M"
       }
@@ -96,12 +76,22 @@
     "copy_tab_to_obsidian": {
       "description": "Copy current tab as Markdown to Obsidian"
     }
-    
   },
   "browser_specific_settings": {
     "gecko": {
       "id": "{1c5e4c6f-5530-49a3-b216-31ce7d744db0}",
-      "strict_min_version": "65.0"
+      "strict_min_version": "126.0",
+      "background": {
+        "scripts": [
+          "background/bg-setup.js"
+        ]
+      }
+    },
+    "chromium": {
+      "background": {
+        "service_worker": "background/bg-setup.js"
+      },
+      "minimum_chrome_version": "126"
     }
   }
 }

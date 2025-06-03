@@ -140,7 +140,12 @@ function turndown(content, options, article) {
   }
 
   function convertToFencedCodeBlock(node, options) {
-    node.innerHTML = node.innerHTML.replaceAll('<br-keep></br-keep>', '<br>');
+    // Safely replace br-keep elements with br elements
+    const brKeepElements = node.querySelectorAll('br-keep');
+    brKeepElements.forEach(brKeep => {
+      const br = document.createElement('br');
+      brKeep.replaceWith(br);
+    });
     const langMatch = node.id?.match(/code-lang-(.+)/);
     const language = langMatch?.length > 0 ? langMatch[1] : '';
 
@@ -311,7 +316,7 @@ async function getArticleFromDom(domString) {
     // Readability.js will strip out headings from the dom if certain words appear in their className
     // See: https://github.com/mozilla/readability/issues/807  
     header.className = '';
-    header.outerHTML = header.outerHTML;  
+    // Remove redundant outerHTML assignment that doesn't do anything
   });
 
   // simplify the dom into an article
