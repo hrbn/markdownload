@@ -1,0 +1,6 @@
+tabs.executeScript replaced 
+
+resolved unsafe assignment to innerHTML/outerHTML
+Updated permissions
+Implemented service worker and added browser-specific manifest keys for background scripts
+Resolved unsupported manifest keys by updating minimum browser versions

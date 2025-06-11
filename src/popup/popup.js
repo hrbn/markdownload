@@ -54,6 +54,25 @@ const downloadListener = (id, url) => {
   return self;
 }
 
+// function to turn the title into a valid file name (local version for popup)
+function generateValidFileName(title, disallowedChars = null) {
+  if (!title) return title;
+  else title = title + '';
+  // remove < > : " / \ | ? * 
+  var illegalRe = /[\/\?<>\\:\*\|":]/g;
+  // and non-breaking spaces (thanks @Licat)
+  var name = title.replace(illegalRe, "").replace(new RegExp('\u00A0', 'g'), ' ');
+  
+  if (disallowedChars) {
+    for (let c of disallowedChars) {
+      if (`[\\^$.|?*+()`.includes(c)) c = `\\${c}`;
+      name = name.replace(new RegExp(c, 'g'), '');
+    }
+  }
+  
+  return name;
+}
+
 const downloadsApi = async (state) => {
   // create the object url with markdown data as a blob
   const url = URL.createObjectURL(new Blob([state.markdown], {
@@ -65,7 +84,7 @@ const downloadsApi = async (state) => {
     console.log(state)
     const id = await browser.downloads.download({
       url: url,
-      filename: state.mdClipsFolder + state.title + ".md",
+      filename: state.mdClipsFolder + generateValidFileName(state.title, state.options.disallowedChars) + ".md",
       saveAs: state.options.saveAs
     })
 
